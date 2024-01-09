@@ -15,7 +15,7 @@ jobs:
 
     - name: Check README
       run: |
-        if grep -q 'John Doe' README.md; then
+        if grep -q 'Federico Galizzi' README.md; then
           echo "Readme check passed!"
         else
           echo "Error: README.md does not contain the required name."
