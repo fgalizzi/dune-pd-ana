@@ -1,10 +1,5 @@
-
 #include "flc.hpp"
 
-#include "/Users/federico/G_Class/G_Func.hpp"
-#include "/Users/federico/G_Class/G_Read.hpp"
-#include "/Users/federico/G_Class/G_WF.hpp"
-#include "/Users/federico/G_Class/G_Utility.hpp"
 
 void Noise_PSD(){
   gStyle->SetOptFit(1111); gStyle->SetOptTitle(0);

@@ -1,10 +1,5 @@
 #include "flc.hpp"
 
-#include "/Users/federico/G_Class/G_Func.hpp"
-#include "/Users/federico/G_Class/G_Read.hpp"
-#include "/Users/federico/G_Class/G_WF.hpp"
-#include "/Users/federico/G_Class/G_Utility.hpp"
-
 const int F = 2;
 
 void FFT_Comp() {

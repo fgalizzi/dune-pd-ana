@@ -34,3 +34,11 @@ const double F_PROMPT = 0.8;
 
 std::string WF_FILE ("C3_ch1_1953.dat");
 
+
+
+
+#include "/Users/federico/G_Class/G_Func.hpp"
+#include "/Users/federico/G_Class/G_Read.hpp"
+#include "/Users/federico/G_Class/G_WF.hpp"
+#include "/Users/federico/G_Class/G_Utility.hpp"
+

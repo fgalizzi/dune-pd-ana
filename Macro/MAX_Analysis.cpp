@@ -1,9 +1,5 @@
 #include "flc.hpp"
 
-#include "/Users/federico/G_Class/G_Func.hpp"
-#include "/Users/federico/G_Class/G_Read.hpp"
-#include "/Users/federico/G_Class/G_WF.hpp"
-#include "/Users/federico/G_Class/G_Utility.hpp"
 
 auto INT_WIN = INT_UP-INT_LOW;
 auto MOV_WIN = 200;
