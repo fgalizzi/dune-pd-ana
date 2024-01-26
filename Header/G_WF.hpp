@@ -328,8 +328,8 @@ TGraph* build_avg_spectral_density(int nsample, double t1, double t0, std::vecto
   TGraph* g_avg_spectral_density = new TGraph(nsample_fft);
   for (int j=0; j<nsample_fft; j++)
     g_avg_spectral_density->SetPoint(j, j/t1, 0.);
-  double ymin = -140;
-  double ymax = 20;
+  double ymin = -100;
+  double ymax = -20;
   int    nbinsy = 100;
 
   TH2D* h2_spectral_density = new TH2D("h2_spectral_density",
@@ -420,6 +420,70 @@ void Avg_NonSat_WF (vector<T>& y, vector<T>& avg_wf, int len, T sat_low, T sat_u
   for (int i = 0; i < len; i++) avg_wf[i] /= (T) norm;
   std::cout << "N avg WF " << norm << std::endl;
 }
+
+// Pick up the first saturating WF 
+//*********************************************
+template <typename T>
+void Sat_WF(vector<T>& y, vector<T>& y2, int len, T sat_up){
+//*********************************************
+  T max_el, min_el;
+    
+  for (int i = 0; i*len < y.size(); i++) {
+    max_el = *max_element( &y[i*len], &y[(i+1)*len-1]);
+    
+    if (max_el>sat_up) {
+      for (unsigned int j = 0; j < len; j++) y2.push_back(y[i*len+j]);
+      return;
+    }
+  }
+    
+  std::cout << "\n \n !!! \n No saturating WF \n Threshold was set to " << sat_up << "\n \n" ;
+}
+
+// Return the waveform where the prepulse-trigger ticks are within the
+// sat_low-sat_up range
+//*********************************************
+template <typename T>
+void SelCalib_WF(vector<T>& y, vector<T>& y2, int len, int pre, T sat_low, T sat_up, T bsl){
+//*********************************************
+  T max_el, min_el;
+    
+  for (int i = 0; i*len < y.size(); i++) {
+    max_el = *max_element( &y[i*len], &y[i*len+pre]);
+    min_el = *min_element( &y[i*len], &y[i*len+pre]);
+    
+    if (max_el<bsl && min_el > -bsl) {
+      max_el = *max_element(&y[i*len+pre], &y[(i+1)*len-1]);
+      min_el = *min_element(&y[i*len+pre], &y[(i+1)*len-1]);
+      
+      if (max_el<sat_up && min_el > sat_low) {
+      for (unsigned int j = 0; j < len; j++) y2.push_back(y[i*len+j]);
+      }
+    }
+  }  
+  return;
+}
+
+// Return the waveform where the prepulse-trigger ticks are within the
+// sat_low-sat_up range
+//*********************************************
+template <typename T>
+void GoodBaseline_WF(vector<T>& y, vector<T>& y2, int len, int pre, T sat_low, T sat_up){
+//*********************************************
+  T max_el, min_el;
+    
+  for (int i = 0; i*len < y.size(); i++) {
+    max_el = *max_element( &y[i*len], &y[i*len+pre]);
+    min_el = *min_element( &y[i*len], &y[i*len+pre]);
+    
+    if (max_el<sat_up && min_el > sat_low) {
+      for (unsigned int j = 0; j < len; j++) y2.push_back(y[i*len+j]);
+    }
+  }
+    
+  return;
+}
+
 
 // Averages just the non saturating waveform and gives you the number of those
 //*********************************************

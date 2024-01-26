@@ -2,6 +2,8 @@
 
 
 void Persistence() {
+  gStyle->SetStatX(0.9); gStyle->SetStatY(0.9);
+
   double y0, y1;
   vector<double> x , y , y2 , avg_wf, avg_wf2;
   
@@ -10,7 +12,6 @@ void Persistence() {
   CAEN_WF_Binary(WF_FILE, y, N_WF, MEMORYDEPTH);
   //CompleteWFfloat_Binary(WF_FILE, y, N_WF, MEMORYDEPTH);
   SubBaseline(y, MEMORYDEPTH, PREPULSE_TICKS);
-  //int nnn =  NonSat_WF(y, y2, MEMORYDEPTH, SAT_LOW, SAT_UP);
 
   std::cout << "size " << y.size() << " #WF " << y.size()/MEMORYDEPTH << std::endl;  
   std::cout << "avg size " << avg_wf.size() << std::endl;
@@ -28,7 +29,8 @@ void Persistence() {
   //y0 = *min_element(std::begin(y2), std::end(y2));
   //y1 = *max_element(std::begin(y2), std::end(y2));
 
-  TH2D* h2 = new TH2D("h2", Form("%s;%s;%s", "DecoWF", "Ticks", "ADC Counts"), MEMORYDEPTH/2, 0., MEMORYDEPTH, 40, -200, 200);
+  //TH2D* h2 = new TH2D("h2", Form("%s;%s;%s", "DecoWF", "Ticks", "ADC Counts"), MEMORYDEPTH/2, 0., MEMORYDEPTH, 200, y0, y1);
+  TH2D* h2 = new TH2D("h2", Form("%s;%s;%s", "DecoWF", "Ticks", "ADC Counts"), MEMORYDEPTH/2, 0., MEMORYDEPTH, 200, -30, 300);
   for (int i=0; i<N_WF; i++) for (int j=0; j<MEMORYDEPTH; j=j+2) h2->Fill(j, y[i*MEMORYDEPTH+j]);
   //for (int i=0; i<N_WF; i++) for (int j=0; j<MEMORYDEPTH; j=j+2) h2->Fill(j, y2[i*MEMORYDEPTH+j]);
   y.erase(y.begin(), y.end());

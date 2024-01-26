@@ -12,10 +12,10 @@ void SPE() {
   SubBaseline(y, MEMORYDEPTH, PREPULSE_TICKS);
   int nnn =  NonSat_WF(y, y2, MEMORYDEPTH, SAT_LOW, SAT_UP);
   TH1D* hI = BuildRawChargeHisto(y2, int_wf, MEMORYDEPTH, INT_LOW, INT_UP);
-  Avg_Sel_WF (y2, y3, avg_wf, int_wf, MU0_LOW, MU0_UP);
+  Avg_Sel_WF (y2, y3, avg_wf, int_wf, SPE_LOW, SPE_UP);
  
   Print_RiseFallTime(avg_wf, TICK_LEN);
-  MovingAverageWF(avg_wf, avg_wf, 100);
+  //MovingAverageWF(avg_wf, avg_wf, 100);
 
   TCanvas* cTime = new TCanvas("wavedec","wavedec");
  

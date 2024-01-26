@@ -6,14 +6,16 @@ void LED_Analysis(){
 //*********************************************
   gStyle->SetOptFit(1111); gStyle->SetOptTitle(0);
   gStyle->SetStatX(0.9); gStyle->SetStatY(0.9);
-  
+  ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit"); 
+
   std::vector<double> y, sel_wf, int_wf;
 
   //CompleteWFfloat_Binary(WF_FILE, y, N_WF, MEMORYDEPTH);
   CAEN_WF_Binary(WF_FILE, y, N_WF, MEMORYDEPTH);
   //SubBaseline_Invert(all_wf, MEMORYDEPTH, PREPULSE_TICKS);
   SubBaseline(y, MEMORYDEPTH, PREPULSE_TICKS);
-  int nnn = NonSat_WF(y, sel_wf, MEMORYDEPTH, SAT_LOW, SAT_UP);  
+  SelCalib_WF(y, sel_wf, MEMORYDEPTH, PREPULSE_TICKS, SAT_LOW, SAT_UP, BSL);  
+  
   TH1D* hI = BuildRawChargeHisto(sel_wf, int_wf, MEMORYDEPTH, INT_LOW, INT_UP);
   //TH1D* hI = BuildRawChargeHisto(sel_wf, int_wf, MEMORYDEPTH, INT_LOW, INT_UP, HMIN, HMAX);
 
@@ -24,16 +26,13 @@ void LED_Analysis(){
 
   //go for peaks: create an instance of TSpectrum
   TSpectrum *s = new TSpectrum(NMAXPEAKS);
-  int npeaks = s->Search(hI,1,"goff",0.05);
+  int npeaks = s->Search(hI,1,"goff",0.05)+1;
   par[0] = 0;     //peakx[0];
   par[1] = (SPE_LOW+SPE_UP)/2;   //peakx[1]-peakx[0];
   par[2] = (S0_LOW+S0_UP)/2;   //sigma_0
   par[3] = (SC_LOW+SC_UP)/2;    //sigma_cell
   for(int i = 0 ; i < npeaks ; i++){
     par[i+4] = 140;//peaky[i];
-    //par[i*3+0] = peaky[i];
-    //par[i*3+1] = peakx[i];
-    //par[i*3+2] = 0.000000001;
   }
 
   //Gaussian sumatory
@@ -53,7 +52,7 @@ void LED_Analysis(){
   //fit histogram
   hI->Draw();
   cout << "Fit ... " << endl;
-  //hI->Fit("fgaus", "R");
+  hI->Fit("fgaus", "R");
   cout << "... end fit. " << endl;
   
   c1->Modified();
