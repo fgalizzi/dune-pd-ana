@@ -16,5 +16,4 @@ your analysis.
 To run a macro, you can use the command "root macro.cpp"
 
 ### Author
-Fi
-ederico Galizzi - f.galizzi1@campus.unimib.it
+Federico Galizzi - f.galizzi1@campus.unimib.it
