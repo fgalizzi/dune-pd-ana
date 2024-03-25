@@ -42,6 +42,23 @@ void g_scale(TGraph* g, double c) {
   return;
 }
 
+
+// Find x where g(x)=y in range [x0;x1]
+//*********************************************
+inline double g_find_x(TGraph* g, double y, double x0, double x1, double
+    epsilon = 1e-2) {
+//*********************************************
+  auto fc_g= [g](double *x, double* p) {
+    return p[0]*g->Eval(x[0]);
+  };
+  TF1 f("f", fc_g, x0, x1, 1);
+  f.SetNpx(g->GetN());
+  f.SetParameter(0, 1.);
+
+  return f.GetX(y, x0, x1, epsilon);
+}
+
+
 //*********************************************
 void VecDouble_in_Binary(std::string fileName, std::vector<double>& vec){
 //*********************************************
@@ -73,7 +90,7 @@ TGraph* Build_CX_Graph (TF1* fgaus, TH1* hI){
     Pi[i] = f[i]->Integral(mean-4*sigma, mean+4*sigma, 1e-5)/(hI->GetBinWidth(5)*hI->GetEntries());
   }
 
-  auto* g_CX = new TGraph(npeaks,Pi);
+  auto* g_CX = new TGraph(npeaks, Pi);
   return g_CX;
 }
 
@@ -81,9 +98,13 @@ TGraph* Build_CX_Graph (TF1* fgaus, TH1* hI){
 // Given an average waveform, it prints the rise time 10%->90% and the fall
 // time 90->10. It assumes a flat baseline before the pulse.
 //*********************************************
-void Print_RiseFallTime(const std::vector<double>& waveform, const double tick_len) {
+void Print_RiseFallTime(std::vector<double>& waveform, const double tick_len) {
 //*********************************************
-  
+ 
+  double* wf = waveform.data();
+  auto* g_wf = new TGraph(waveform.size(), wf);
+  double x0, x1, xm;
+
   // Find the maximum amplitude
   double max_amplitude = *std::max_element(waveform.begin(), waveform.end());
   double min_amplitude = *std::min_element(waveform.begin(), waveform.end());
@@ -116,6 +137,18 @@ void Print_RiseFallTime(const std::vector<double>& waveform, const double tick_l
   std::cout << "Max " << max_amplitude << std::endl;
   std::cout << "Min " << min_amplitude << std::endl;
   std::cout << "Rise time 10%->90% " << rise_time << "\nFall time 90%->10% " << fall_time << std::endl;
+
+  xm = g_find_x(g_wf, max_amplitude*0.98, 0., double(waveform.size()), 0.1);
+  x0 = g_find_x(g_wf, threshold_10, 0., xm, 0.1);
+  x1 = g_find_x(g_wf, threshold_90, x0, xm, 0.1);
+  rise_time = (x1-x0)*tick_len;
+  x0 = g_find_x(g_wf, threshold_90, xm, double(waveform.size()), 0.1);
+  x1 = g_find_x(g_wf, threshold_10, x0, double(waveform.size()), 0.1);
+  fall_time = (x1-x0)*tick_len;
+  
+  std::cout << "\n \nNew method " << std::endl;
+  std::cout << "Rise time 10%->90% " << rise_time << "\nFall time 90%->10% " << fall_time << std::endl;
+
 
 }
 

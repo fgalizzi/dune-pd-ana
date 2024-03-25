@@ -98,7 +98,7 @@ void CompleteWF_Binary_Swap(std::string fileName, vector<double>& y, int WFs, in
   for (int n_wf=0; n_wf<WFs; n_wf++) {
     for (int i=0; i<len; i++) {
       file.read( reinterpret_cast<char*>( &t ), sizeof( t ) );
-      t = OSSwapBigToHostInt16(t);
+      //t = OSSwapBigToHostInt16(t);
       y.push_back((double) t);
     }
   }
